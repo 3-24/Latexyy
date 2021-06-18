@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const math = require('./math.js');
 dotenv.config();
 
 console.log(process.env.TOKEN);
@@ -18,6 +19,10 @@ client.on('message', message => {
     if (command == 'tex'){
         tex_input = args.join(' ');
         console.log(tex_input);
+        math(tex_input, 10.0).then(outputFileName => {
+            console.log(outputFileName);
+            message.channel.send({files: [outputFileName]});
+        }).catch(error => message.channel.send(error));
     }
 })
 
