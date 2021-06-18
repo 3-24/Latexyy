@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const math = require('./math.js');
+const math = require('./latexConvert.js');
 dotenv.config();
 
 console.log(process.env.TOKEN);
