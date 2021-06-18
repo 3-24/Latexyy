@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const math = require('./latexConvert.js');
+const latexConvert = require('./latexConvert.js');
 dotenv.config();
 
 console.log(process.env.TOKEN);
@@ -18,8 +18,7 @@ client.on('message', message => {
     const command = args.shift();
     if (command == 'tex'){
         tex_input = args.join(' ');
-        console.log(tex_input);
-        math(tex_input, 10.0).then(outputFileName => {
+        latexConvert(tex_input, 10.0).then(outputFileName => {
             console.log(outputFileName);
             message.channel.send({files: [outputFileName]});
         }).catch(error => message.channel.send(error));

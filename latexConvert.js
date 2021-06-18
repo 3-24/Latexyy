@@ -26,9 +26,7 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 const shell = require('shelljs');
 const sharp = require('sharp');
-const { resolve } = require('path');
 
-const staticDir = 'static';
 const tempDir = 'temp';
 const outputDir = 'output';
 
@@ -98,23 +96,23 @@ function cleanupTempFilesAsync(id) {
 }
 
 module.exports = async (math_string, outputScale) => {
-        // Create temp and output directories if they don't exist yet
-        if (!fs.existsSync(tempDir)) {
-            fs.mkdirSync(tempDir);
-        }
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir);
-        }
-    
-        const id = generateID();
-        await fsPromises.mkdir(`${tempDir}/${id}`);
-        await fsPromises.writeFile(`${tempDir}/${id}/equation.tex`, getLatexTemplate(math_string));
-    
-        await execAsync(getDockerCommand(id, outputScale));
-    
-        const inputSvgFileName = `${tempDir}/${id}/equation.svg`;
-        const outputFileName = `${outputDir}/img-${id}.png`;
-        await sharp(inputSvgFileName, {density: 96}).flatten({ background: { r: 255, g: 255, b: 255 } }).toFile(outputFileName);
-        await cleanupTempFilesAsync(id);
-        return outputFileName;
+  // Create temp and output directories if they don't exist yet
+  if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir);
+  }
+  if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir);
+  }
+
+  const id = generateID();
+  await fsPromises.mkdir(`${tempDir}/${id}`);
+  await fsPromises.writeFile(`${tempDir}/${id}/equation.tex`, getLatexTemplate(math_string));
+
+  await execAsync(getDockerCommand(id, outputScale));
+
+  const inputSvgFileName = `${tempDir}/${id}/equation.svg`;
+  const outputFileName = `${outputDir}/img-${id}.png`;
+  await sharp(inputSvgFileName, {density: 96}).flatten({ background: { r: 255, g: 255, b: 255 } }).toFile(outputFileName);
+  await cleanupTempFilesAsync(id);
+  return outputFileName;
 }
