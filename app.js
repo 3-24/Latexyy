@@ -15,7 +15,7 @@ client.on('message', message => {
     const args =  message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift();
     if (command == 'inline' || command == 'display'){
-        const tex_input = `$ ${(command == 'display') ? "\\displaystyle" : ""} ${args.join(' ')}$`;
+        const tex_input = `${(command == 'display') ? "\\displaystyle" : ""} ${args.join(' ')}`;
         latexConvert(tex_input, 10.0).then(outputFileName => {
             message.channel.send({files: [outputFileName]});
         }).catch(error => message.channel.send(error.toString()));

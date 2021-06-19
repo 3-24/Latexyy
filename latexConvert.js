@@ -31,7 +31,7 @@ const outputDir = 'output';
 
 
 // Unsupported commands we will error on
-const unsupportedCommands = ['\\usepackage', '\\input', '\\include', '\\write18', '\\immediate', '\\verbatiminput'];
+const unsupportedCommands = ['\\usepackage', '\\input', '\\include', '\\write18', '\\immediate', '\\verbatiminput', '\\begin{math}', '\\end{math}'];
 
 // Get the LaTeX document template for the requested equation
 function getLatexTemplate(equation) {
@@ -44,7 +44,9 @@ function getLatexTemplate(equation) {
       \\usepackage{siunitx}
       \\usepackage[utf8]{inputenc}
       \\begin{document}
+      \\begin{math}
       ${equation}
+      \\end{math}
       \\end{document}`;
 }
 
@@ -93,6 +95,10 @@ module.exports = async (math_string) => {
   if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir);
   }
+
+  const unsupportedCommandsPresent = unsupportedCommands.filter(cmd => math_string.includes(cmd));
+  if (unsupportedCommandsPresent.length > 0) await Promise.reject(new Error(`Unsupported command(s) found: ${unsupportedCommands.join(", ")}.`));
+
 
   const id = generateID();
   await fsPromises.mkdir(`${tempDir}/${id}`);
