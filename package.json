@@ -7,7 +7,6 @@
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "fs": "0.0.1-security",
-    "sharp": "^0.28.3",
     "shelljs": "^0.8.4"
   },
   "devDependencies": {},
