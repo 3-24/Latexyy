@@ -14,12 +14,11 @@ client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args =  message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift();
-    if (command == 'tex'){
-        tex_input = args.join(' ');
+    if (command == 'inline' || command == 'display'){
+        const tex_input = `$ ${(command == 'display') ? "\\displaystyle" : ""} ${args.join(' ')}$`;
         latexConvert(tex_input, 10.0).then(outputFileName => {
-            console.log(outputFileName);
             message.channel.send({files: [outputFileName]});
-        }).catch(error => message.channel.send(error));
+        }).catch(error => message.channel.send(error.toString()));
     }
 })
 
