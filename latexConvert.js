@@ -76,7 +76,9 @@ function getCommand(id) {
 function execAsync(cmd, opts = {}) {
     return new Promise((resolve, reject) => {
       shell.exec(cmd, opts, (code, stdout, stderr) => {
-        if (code != 0) reject(new Error(stderr));
+        //if (code != 0) reject(new Error(stderr));
+        // if (code != 0) reject(new Error(stderr));
+        if (code != 0) reject(new Error("Invalid LaTeX syntax or too long input."))
         else resolve(stdout);
       });
     });
