@@ -2,8 +2,6 @@ const dotenv = require('dotenv');
 const latexConvert = require('./latexConvert.js');
 dotenv.config();
 
-console.log(process.env.TOKEN);
-
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
