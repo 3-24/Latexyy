@@ -25,7 +25,6 @@ SOFTWARE.
 const fs = require('fs');
 const fsPromises = fs.promises;
 const shell = require('shelljs');
-const sharp = require('sharp');
 
 const tempDir = 'temp';
 const outputDir = 'output';
@@ -37,14 +36,13 @@ const unsupportedCommands = ['\\usepackage', '\\input', '\\include', '\\write18'
 // Get the LaTeX document template for the requested equation
 function getLatexTemplate(equation) {
     return `
-      \\documentclass[12pt]{article}
+      \\documentclass[preview, convert={convertexe={convert -flatten}, outext=.png, density=300}, border=2pt]{standalone}
       \\usepackage{amsmath}
       \\usepackage{amssymb}
       \\usepackage{amsfonts}
       \\usepackage{xcolor}
       \\usepackage{siunitx}
       \\usepackage[utf8]{inputenc}
-      \\thispagestyle{empty}
       \\begin{document}
       ${equation}
       \\end{document}`;
@@ -60,24 +58,16 @@ function generateID() {
 }
 
   // Get the final command responsible for launching the Docker container and generating a svg file
-function getDockerCommand(id, output_scale) {
+function getCommand(id) {
     // Commands to run within the container
-    const containerCmds = `
+    return `
+      cd ${tempDir}/${id}
       # Prevent LaTeX from reading/writing files in parent directories
       echo 'openout_any = p\nopenin_any = p' > /tmp/texmf.cnf
       export TEXMFCNF='/tmp:'
-      # Compile .tex file to .dvi file. Timeout kills it after 5 seconds if held up
-      timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error equation.tex
-      # Convert .dvi to .svg file. Timeout kills it after 5 seconds if held up
-      timeout 5 dvisvgm --no-fonts --scale=${output_scale} --exact equation.dvi`;
-  
-    // Start the container in the appropriate directory and run commands within it.
-    // Files in this directory will be accessible under /data within the container.
-    return `
-      cd ${tempDir}/${id}
-      docker run --rm -i --user="$(id -u):$(id -g)" \
-          --net=none -v "$PWD":/data "blang/latex:ubuntu" \
-          /bin/bash -c "${containerCmds}"`;
+      timeout 5 pdflatex -shell-escape -interaction=nonstopmode -halt-on-error equation.tex
+      cp equation.png ../../${outputDir}/img-${id}.png
+      `;
 }
 
   // Execute a shell command
@@ -95,7 +85,7 @@ function cleanupTempFilesAsync(id) {
     return fsPromises.rmdir(`${tempDir}/${id}`, { recursive: true });
 }
 
-module.exports = async (math_string, outputScale) => {
+module.exports = async (math_string) => {
   // Create temp and output directories if they don't exist yet
   if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir);
@@ -108,11 +98,8 @@ module.exports = async (math_string, outputScale) => {
   await fsPromises.mkdir(`${tempDir}/${id}`);
   await fsPromises.writeFile(`${tempDir}/${id}/equation.tex`, getLatexTemplate(math_string));
 
-  await execAsync(getDockerCommand(id, outputScale));
-
-  const inputSvgFileName = `${tempDir}/${id}/equation.svg`;
+  await execAsync(getCommand(id));
   const outputFileName = `${outputDir}/img-${id}.png`;
-  await sharp(inputSvgFileName, {density: 96}).flatten({ background: { r: 255, g: 255, b: 255 } }).toFile(outputFileName);
   await cleanupTempFilesAsync(id);
   return outputFileName;
 }
