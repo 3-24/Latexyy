@@ -119,6 +119,6 @@ dist
 
 
 # Custom area
-.env
 output/*
 temp/*
+config.json
