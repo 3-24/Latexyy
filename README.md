@@ -18,7 +18,7 @@ Welcome, math-lovers! This is LaTeX math equation bot for various chatting platf
 
 ## How to run?
 
-1. You need to create config.json based on [config.json.example file](https://github.com/3-24/Latexyy/blob/master/config.json.example). It provides two fields, the discord owner ID, and the discord bot token.
+1. You need to create config.json based on [config.json.example](https://github.com/3-24/Latexyy/blob/master/config.json.example) file. It provides two fields, the discord owner ID, and the discord bot token.
 2. Build the Docker image and run it. If you prefer running it without Docker, refer [Dockerfile](https://github.com/3-24/Latexyy/blob/master/Dockerfile) and install the required packages.
 
 ## Contribution
