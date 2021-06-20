@@ -38,7 +38,7 @@ client.on('message', message => {
         **tex.help**: Show this message`)
         .addField(`Bug Report & Contribution`,
         `You may raise an issue on the Github repository,
-        https://github.com/3-24/Latexxy.`, true)
+        https://github.com/3-24/Latexyy .`, true)
         .setTimestamp()
         .setFooter('Help Message', 'https://imgur.com/9XszfCX.png'))
     }
