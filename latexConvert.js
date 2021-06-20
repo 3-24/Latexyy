@@ -36,16 +36,18 @@ const unsupportedCommands = ['\\usepackage', '\\input', '\\include', '\\write18'
 // Get the LaTeX document template for the requested equation
 function getLatexTemplate(equation) {
     return `\\batchmode
-\\documentclass[convert={convertexe={convert -flatten -colorspace RGB}, outext=.png, density=300}, border=2pt]{standalone}
+\\documentclass[convert={convertexe={convert -colorspace RGB}, outext=.png, density=300}, border=2pt]{standalone}
 \\usepackage{amsmath}
 \\usepackage{amssymb}
 \\usepackage{amsfonts}
 \\usepackage{xcolor}
 \\usepackage{siunitx}
 \\begin{document}
-\\begin{math}
-${equation}
-\\end{math}
+\\color{white}{
+  \\begin{math}
+  ${equation}
+  \\end{math}
+}
 \\end{document}`;
 }
 
