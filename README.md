@@ -13,7 +13,7 @@ Welcome, math-lovers! This is LaTeX math equation bot for various chatting platf
 ## Avilable Commands
 
 - **tex.inline \<input\>**: Return rendered image of LaTeX inline equation.
-- **tex.display \<input\>**: Return rendered image of LaTeX isplay equation
+- **tex.display \<input\>**: Return rendered image of LaTeX display equation
 - **tex.help**: help message
 
 ## How to Run It?
