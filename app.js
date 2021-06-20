@@ -5,6 +5,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.once('ready', () => {
+    client.user.setActivity("tex.help", {type: "LISTENING"})
 	console.log('Latexxy is ON');
 });
 
@@ -25,6 +26,21 @@ client.on('message', message => {
                 // TODO: destory the database client 
             });
         }
+    } else if (command == "help"){
+        message.channel.send(new Discord.MessageEmbed()
+        .setColor('#1f2247')
+        .setDescription('')
+        .setTitle('Available Commands')
+        .setAuthor('Latexxy', 'https://imgur.com/9XszfCX.png')
+        .setDescription(`
+        **tex.inline <input>**: Return rendered image of LaTeX inline equation.
+        **tex.display <input>**: Return rendered image of LaTeX isplay equation
+        **tex.help**: Show this message`)
+        .addField(`Bug Report & Contribution`,
+        `You may raise an issue on the Github repository,
+        https://github.com/3-24/Latexxy.`, true)
+        .setTimestamp()
+        .setFooter('Help Message', 'https://imgur.com/9XszfCX.png'))
     }
 })
 
