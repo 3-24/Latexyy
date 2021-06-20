@@ -1,7 +1,7 @@
 
 # Latexxy
 
-LaTeX math equation bot for Discord.
+Welcome, math-lovers! This is LaTeX math equation bot for Discord.
 
 <div align = "center">
   
