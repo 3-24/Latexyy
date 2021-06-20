@@ -35,19 +35,18 @@ const unsupportedCommands = ['\\usepackage', '\\input', '\\include', '\\write18'
 
 // Get the LaTeX document template for the requested equation
 function getLatexTemplate(equation) {
-    return `
-      \\documentclass[preview, convert={convertexe={convert -flatten}, outext=.png, density=300}, border=2pt]{standalone}
-      \\usepackage{amsmath}
-      \\usepackage{amssymb}
-      \\usepackage{amsfonts}
-      \\usepackage{xcolor}
-      \\usepackage{siunitx}
-      \\usepackage[utf8]{inputenc}
-      \\begin{document}
-      \\begin{math}
-      ${equation}
-      \\end{math}
-      \\end{document}`;
+    return `\\batchmode
+\\documentclass[convert={convertexe={convert -flatten -colorspace RGB}, outext=.png, density=300}, border=2pt]{standalone}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{amsfonts}
+\\usepackage{xcolor}
+\\usepackage{siunitx}
+\\begin{document}
+\\begin{math}
+${equation}
+\\end{math}
+\\end{document}`;
 }
 
 function generateID() {
@@ -65,9 +64,9 @@ function getCommand(id) {
     return `
       cd ${tempDir}/${id}
       # Prevent LaTeX from reading/writing files in parent directories
-      echo 'openout_any = p\nopenin_any = p' > /tmp/texmf.cnf
+      echo 'openout_any = p\nopenin_any = a' > /tmp/texmf.cnf
       export TEXMFCNF='/tmp:'
-      timeout 5 pdflatex -shell-escape -interaction=nonstopmode -halt-on-error equation.tex
+      timeout 5 pdflatex -shell-escape -halt-on-error equation.tex
       cp equation.png ../../${outputDir}/img-${id}.png
       `;
 }
@@ -78,7 +77,7 @@ function execAsync(cmd, opts = {}) {
       shell.exec(cmd, opts, (code, stdout, stderr) => {
         //if (code != 0) reject(new Error(stderr));
         // if (code != 0) reject(new Error(stderr));
-        if (code != 0) reject(new Error("Invalid LaTeX syntax or too long input."))
+        if (code != 0 || stderr.length != 0 ) reject(new Error("Invalid LaTeX syntax or time limit exceeded."))
         else resolve(stdout);
       });
     });
