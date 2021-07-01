@@ -40,6 +40,7 @@ function getLatexTemplate(equation) {
 \\usepackage{amsmath}
 \\usepackage{amssymb}
 \\usepackage{amsfonts}
+\\usepackage{mathrsfs}
 \\usepackage{xcolor}
 \\usepackage{siunitx}
 \\begin{document}
